@@ -19,6 +19,7 @@ The project automates:
 
 ```text
 GitHub → GitHub Actions → Terraform (AWS EC2 + EKS) → Ansible → Docker → AWS ECR → Kubernetes (EKS)
+```
 ![c5f5862c-1a4a-4d80-b0ff-0174328ed950](https://github.com/user-attachments/assets/77107172-1a67-4bc3-86b3-536586e5fa72)
 
 # DevOps Infrastructure Automation 🚀
