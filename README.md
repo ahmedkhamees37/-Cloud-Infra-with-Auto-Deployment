@@ -53,7 +53,7 @@ Before using this project, ensure you have:
    ```bash
    git clone git@github.com:yourusername/your-repo.git
    cd your-repo
-
+```
 .
 ├── ansible/         # Playbooks to configure EC2
 ├── docker/          # Dockerfile to build the app image
@@ -73,7 +73,7 @@ cd terraform/
 terraform init        # Initialize Terraform
 terraform plan       # Review changes (optional)
 terraform apply      # Deploy infrastructure
-
+```
 ## 2. 🛠 Server Configuration with Ansible
 
 ### 📌 Prerequisites
@@ -88,5 +88,5 @@ ansible-playbook -i inventory playbook.yml \
   --private-key ~/.ssh/your-key.pem \
   --user ec2-user  # Default AWS EC2 user
 
-
+```
 
