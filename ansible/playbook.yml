@@ -1,0 +1,86 @@
+---
+- name: Configure EC2 instance
+  hosts: all
+  become: yes
+  tasks:
+    - name: Update system packages
+      yum:
+        name: "*"
+        state: latest
+
+    - name: Remove conflicting podman-docker
+      yum:
+        name: podman-docker
+        state: absent
+
+    - name: Add Docker repo for RHEL 9
+      yum_repository:
+        name: docker-ce
+        description: Docker CE Stable - RHEL 9
+        baseurl: https://download.docker.com/linux/centos/9/$basearch/stable
+        gpgcheck: yes
+        gpgkey: https://download.docker.com/linux/centos/gpg
+        enabled: yes
+
+
+    - name: Install Docker
+      yum:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+        state: present
+
+    - name: Start and enable Docker
+      systemd:
+        name: docker
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+    - name: Remove old Kubernetes repo if exists
+      file:
+        path: /etc/yum.repos.d/kubernetes.repo
+        state: absent
+
+
+
+    - name: Add Kubernetes repo for RHEL 9
+      copy:
+        dest: /etc/yum.repos.d/kubernetes.repo
+        content: |
+          [kubernetes]
+          name=Kubernetes
+          baseurl=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/
+          enabled=1
+          gpgcheck=1
+          gpgkey=https://pkgs.k8s.io/core:/stable:/v1.30/rpm/repodata/repomd.xml.key
+
+
+    - name: Install Kubernetes components
+      yum:
+        name:
+          - kubelet
+          - kubeadm
+          - kubectl
+        state: present
+
+    - name: Enable and start kubelet
+      systemd:
+        name: kubelet
+        enabled: yes
+        state: started
+
+    - name: Disable SELinux (required for Kubernetes)
+      selinux:
+        state: disabled
+
+    - name: Turn off swap
+      command: swapoff -a
+      when: ansible_swaptotal_mb > 0
+
+    - name: Comment swap entry in fstab
+      replace:
+        path: /etc/fstab
+        regexp: '^([^#].*swap.*)$'
+        replace: '# \1'
