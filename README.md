@@ -89,4 +89,61 @@ ansible-playbook -i inventory playbook.yml \
   --user ec2-user  # Default AWS EC2 user
 
 ```
+## 3. 🐳 Application Containerization
+
+### Build and Push Docker Image
+
+```bash
+cd docker/
+docker build -t yourdockerhub/myapp:latest .
+docker push yourdockerhub/myapp:latest
+```
+## 4. ☸️ Kubernetes Deployment
+
+### Apply Kubernetes Manifests
+
+```bash
+cd k8s/
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+
+# Optional (if using Ingress)
+kubectl apply -f ingress.yaml
+```
+
+## 5. CI/CD Automation (GitHub Actions)
+
+The pipeline will automatically:
+- ✅ Build Docker image
+- ✅ Push to AWS ECR
+- ✅ Deploy to EKS cluster
+
+### Example Workflow
+```yaml
+name: EKS Deployment
+on: [push]
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t $ECR_REGISTRY/app:$GITHUB_SHA .
+      - run: docker push $ECR_REGISTRY/app:$GITHUB_SHA
+      - run: kubectl apply -f k8s/
+```
+
+
+---
+
+✅ **Important:**
+- Replace `yourdockerhub/myapp:latest` with your real DockerHub or ECR repo name.
+- Replace `your-linkedin-url` and `your-github-url` with your real links.
+- If you upload the diagram photo to GitHub, replace `"your_diagram_image_link_here"` with its real path.
+
+---
+
+Would you also like me to prepare a **small badge section** (like "Terraform | Ansible | AWS | Kubernetes | GitHub Actions") at the top for you? 🎖️
+It makes your README look even more professional! 🚀  
+Just say **yes** if you want! 🌟
+
 
